@@ -10,7 +10,7 @@ export const useImage = () => {
   const onFileChange = e => {
     const file = e.target.files[0]
     const fileName = `${uuid()}.jpg`
-    const refFile = storageRef(storage, '/products/', fileName)
+    const refFile = storageRef(storage, '/products/' + fileName)
     const uploadImage = uploadBytesResumable(refFile, file)
     uploadImage.on('state_changed', 
       () => {},
