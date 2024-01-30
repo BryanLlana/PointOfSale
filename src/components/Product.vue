@@ -3,11 +3,13 @@ import { formatCurrency } from '@/helpers'
 import { RouterLink } from 'vue-router'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
+import { useProductsStore } from '@/stores/products';
 defineProps({
   product: {
     type: Object
   }
 })
+const productStore = useProductsStore()
 </script>
 
 <template>
@@ -26,7 +28,7 @@ defineProps({
         >
           <EditIcon />Editar
         </RouterLink>
-        <button type="button" class="flex gap-1 text-red-400">
+        <button @click="productStore.deleteProduct(product.id)" type="button" class="flex gap-1 text-red-400">
           <DeleteIcon />Eliminar
         </button>
       </div>

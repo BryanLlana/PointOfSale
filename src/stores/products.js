@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { computed } from 'vue'
-import { useFirestore, useCollection } from 'vuefire'
-import { addDoc, updateDoc, collection, query, orderBy } from 'firebase/firestore'
+import { useFirestore, useCollection, useFirebaseStorage } from 'vuefire'
+import { addDoc, updateDoc, deleteDoc, collection, query, orderBy, doc, getDoc } from 'firebase/firestore'
+import { ref as storageRef, deleteObject } from 'firebase/storage'
 
 export const useProductsStore = defineStore('product', () => {
   const firestore = useFirestore()
+  const storage = useFirebaseStorage()
   const categoryes = [
     { id: 1, name: 'Sudaderas' },
     { id: 2, name: 'Tenis' },
@@ -40,6 +42,23 @@ export const useProductsStore = defineStore('product', () => {
     }
   }
 
+  const deleteProduct = async id => {
+    try {
+      if (confirm('¿Desea eliminar este producto?')) {
+        const productRef = doc(firestore, 'products', id)
+        const docsnap = await getDoc(productRef)
+        const { image } = docsnap.data()
+        const imageRef =  storageRef(storage, image)
+        await Promise.all([
+          deleteDoc(productRef),
+          deleteObject(imageRef)
+        ])
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const categoryOptions = computed(() => {
     return [
       { label: '--Selecccione--', value: '', attrs: { disabled: true} },
@@ -55,6 +74,7 @@ export const useProductsStore = defineStore('product', () => {
   return {
     createProduct,
     updateProduct,
+    deleteProduct,
     categoryOptions,
     products
   }
