@@ -1,5 +1,7 @@
 <script setup>
 import Link from '@/components/Link.vue'
+import { useProductsStore } from '@/stores/products';
+const productStore = useProductsStore()
 </script>
 
 <template>
@@ -9,6 +11,24 @@ import Link from '@/components/Link.vue'
         POINT
         <span class="text-green-400">OF SALE</span>
       </h1>
+      <div class="flex gap-5 text-white mt-3">
+        <h2 class="text-lg font-extrabold">Filtros:</h2>
+        <div
+          class="flex items-center gap-2"
+          v-for="category in productStore.categories"
+          :key="category.id"
+        > 
+          <input
+            type="radio"
+            name="category"
+            :value="category.id"
+            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            :checked="productStore.selectedCategory === category.id"
+            @change="productStore.selectedCategory = +$event.target.value"
+          >
+          <label class="text-gray-100">{{ category.name }}</label>
+        </div>
+      </div>
     </div>
     <nav>
       <Link to="admin">Administrar</Link>

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useFirestore, useCollection, useFirebaseStorage } from 'vuefire'
 import { addDoc, updateDoc, deleteDoc, collection, query, orderBy, doc, getDoc } from 'firebase/firestore'
 import { ref as storageRef, deleteObject } from 'firebase/storage'
@@ -7,11 +7,12 @@ import { ref as storageRef, deleteObject } from 'firebase/storage'
 export const useProductsStore = defineStore('product', () => {
   const firestore = useFirestore()
   const storage = useFirebaseStorage()
-  const categoryes = [
+  const categories = [
     { id: 1, name: 'Sudaderas' },
     { id: 2, name: 'Tenis' },
     { id: 3, name: 'Lentes' }
   ]
+  const selectedCategory = ref(1)
 
   const q = query(
     collection(firestore, 'products'),
@@ -62,7 +63,7 @@ export const useProductsStore = defineStore('product', () => {
   const categoryOptions = computed(() => {
     return [
       { label: '--Selecccione--', value: '', attrs: { disabled: true} },
-      ...categoryes.map(category => {
+      ...categories.map(category => {
         return {
           label: category.name,
           value: category.id
@@ -71,11 +72,18 @@ export const useProductsStore = defineStore('product', () => {
     ]
   })
 
+  const filteredProducts = computed(() => {
+    return products.value.filter(product => product.category === selectedCategory.value)
+  })
+
   return {
     createProduct,
     updateProduct,
     deleteProduct,
+    selectedCategory,
     categoryOptions,
-    products
+    filteredProducts,
+    products,
+    categories
   }
 })
