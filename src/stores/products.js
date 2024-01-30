@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { computed, ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useFirestore, useCollection } from 'vuefire'
-import { addDoc, collection, query, orderBy } from 'firebase/firestore'
+import { addDoc, updateDoc, collection, query, orderBy } from 'firebase/firestore'
 
 export const useProductsStore = defineStore('product', () => {
   const firestore = useFirestore()
@@ -26,6 +26,20 @@ export const useProductsStore = defineStore('product', () => {
     }
   }
 
+  const updateProduct = async (ref, product) => {
+    try {
+      if (product.url.value.length) {
+        const { image, urlGetImage, url, ...values } = product
+        await updateDoc(ref, { ...values, image: product.url.value })
+      } else {
+        const { image, urlGetImage, url, ...values } = product
+        await updateDoc(ref, { ...values, image: urlGetImage})
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const categoryOptions = computed(() => {
     return [
       { label: '--Selecccione--', value: '', attrs: { disabled: true} },
@@ -40,6 +54,7 @@ export const useProductsStore = defineStore('product', () => {
 
   return {
     createProduct,
+    updateProduct,
     categoryOptions,
     products
   }
