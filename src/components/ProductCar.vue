@@ -1,11 +1,14 @@
 <script setup>
 import AddIcon from '@/components/icons/AddIcon.vue'
 import { formatCurrency } from '@/helpers';
+import { useCartStore } from '@/stores/cart';
 defineProps({
   product: {
     type: Object
   }
 })
+
+const cartStore = useCartStore()
 </script>
 
 <template>
@@ -16,7 +19,7 @@ defineProps({
       <p class="text-gray-500">Disponibles: {{ product.availability }}</p>
       <p class="text-2xl font-extrabold text-blue-400">{{ formatCurrency(product.price) }}</p>
     </div>
-    <button type="button" class="absolute top-1 -right-3">
+    <button @click="cartStore.addItem(product)" type="button" class="absolute top-1 -right-3">
       <AddIcon />
     </button>
   </div>
