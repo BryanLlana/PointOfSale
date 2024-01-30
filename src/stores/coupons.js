@@ -17,6 +17,13 @@ export const useCouponStore = defineStore('coupon', () => {
     discount.value = ((cartStore.subTotal + cartStore.taxes) * discountPercentage.value).toFixed(2)
   })
 
+  const $reset = () => {
+    couponInput.value = '',
+    validationMessage.value = '',
+    discountPercentage.value = '',
+    discount.value = ''
+  }
+
   const applyCoupon = () => {
     if (VALID_COUPONS.some(coupon => coupon.name === couponInput.value)) {
       discountPercentage.value = VALID_COUPONS.find(coupon => coupon.name === couponInput.value).discount
@@ -34,6 +41,7 @@ export const useCouponStore = defineStore('coupon', () => {
     couponInput,
     applyCoupon,
     validationMessage,
-    discount
+    discount,
+    $reset
   }
 })

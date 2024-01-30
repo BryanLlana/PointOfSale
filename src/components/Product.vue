@@ -13,7 +13,7 @@ const productStore = useProductsStore()
 </script>
 
 <template>
-  <li class="flex gap-7 items-center bg-white py-3 rounded-lg">
+  <li :class="{'opacity-30': !product.availability}" class="flex gap-7 items-center bg-white py-3 rounded-lg">
     <img :src="product.image" :alt="product.name" class="w-[120px] md:w-[160px] rounded-full">
     <div class="flex flex-col ">
       <div class="space-y-1">
@@ -21,7 +21,7 @@ const productStore = useProductsStore()
         <p>{{ formatCurrency(product.price) }}</p>
         <p class="opacity-50">{{ product.availability }} productos disponibles</p>
       </div>
-      <div class="mt-3 flex justify-between">
+      <div class="mt-3 flex gap-5">
         <RouterLink
           :to="{ name: 'edit-product', params: { id: product.id } }"
           class="flex gap-1 text-blue-400"
